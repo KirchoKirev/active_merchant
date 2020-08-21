@@ -101,6 +101,16 @@ module ActiveMerchant #:nodoc:
         commit("add_customer", post)
       end
 
+      def delete_stored(customer_vault_id, options = {})
+        post = {}
+
+        add_payment_method(post, customer_vault_id, options)
+        add_customer_data(post, options)
+        add_merchant_defined_fields(post, options)
+
+        commit("delete_customer", post)
+      end
+
       def verify_credentials
         response = void("0")
         response.message != "Authentication Failed"
@@ -215,7 +225,8 @@ module ActiveMerchant #:nodoc:
 
       def commit(action, params)
 
-        params[action == "add_customer" ? :customer_vault : :type] = action
+        is_customer_vault_action = action == "add_customer" || action == "delete_customer"
+        params[is_customer_vault_action ? :customer_vault : :type] = action
         params[:username] = @options[:login]
         params[:password] = @options[:password]
 
