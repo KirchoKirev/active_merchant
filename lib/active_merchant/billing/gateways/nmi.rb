@@ -23,7 +23,7 @@ module ActiveMerchant #:nodoc:
       end
 
       def initialize(options = {})
-        requires!(options, :login, :password)
+        requires!(options, :security_key)
         super
       end
 
@@ -227,8 +227,7 @@ module ActiveMerchant #:nodoc:
 
         is_customer_vault_action = action == "add_customer" || action == "delete_customer"
         params[is_customer_vault_action ? :customer_vault : :type] = action
-        params[:username] = @options[:login]
-        params[:password] = @options[:password]
+        params[:security_key] = @options[:security_key]
 
         raw_response = ssl_post(url, post_data(action, params), headers)
         response = parse(raw_response)
